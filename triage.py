@@ -1,15 +1,5 @@
 # use debugging API and triton to triage the crashes
 
-r"""
-build triton with
-
-mkdir build
-cd build
-cmake -G "Visual Studio 16 2019" -A x64 -DPYTHON_INCLUDE_DIRS="C:\Program Files\Python38\include" -DPYTHON_LIBRARIES="C:\Program Files\Python38\libs\python38.lib" -DZ3_INCLUDE_DIRS="C:\Users\jorda\source\z3-4.11.0-x64-win\include" -DZ3_LIBRARIES="C:\Users\jorda\source\z3-4.11.0-x64-win\bin\libz3.lib" -DCAPSTONE_INCLUDE_DIRS="C:\Users\jorda\source\capstone\include" -DCAPSTONE_LIBRARIES="C:\Users\jorda\source\capstone\msvc\x64\Release\capstone.lib" ..
-
-Also had to drag the z3 python dll into the same folder as the triton dll, so it could find the dep
-"""
-
 from multiprocessing import Process
 from ctypes import *
 try:
@@ -21,11 +11,7 @@ import time
 import sys
 import os
 
-# update the path
 # be sure to import same z3 used to build triton
-
-sys.path.append(r"C:\Users\jorda\source\z3-4.11.0-x64-win\bin\python")
-sys.path.append(r"C:\Users\jorda\source\Triton\build\src\libtriton\Release")
 
 from triton import *
 
@@ -1574,7 +1560,7 @@ def trace_access_case(f, timeout=60, verbupdate=None, skip_imports=True, minimiz
 
     return True
 
-def sall(path = ".\\crsh", times=6):
+def sall(path, times=6):
     for _ in range(times):
         for r, ds, fs in os.walk(path):
             for f in fs:
@@ -1586,7 +1572,7 @@ def sall(path = ".\\crsh", times=6):
     # retry this a bunch and sort results
     # see sall_parser.py
 
-def findmins(path = ".\\crsh", timeout=60, skipimp=True, minimize=True):
+def findmins(path, timeout=60, skipimp=True, minimize=True):
     for r, ds, fs in os.walk(path):
         for f in fs:
             p = r + '\\' + f
