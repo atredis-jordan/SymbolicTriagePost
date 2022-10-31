@@ -1,0 +1,119 @@
+                          ┌───────────────────────┐
+                       --═╡ a PROCMON64.EXE crash ╞═--
+                          └───────────┬───────────┴────────────────────────────┐
+                                      │@000:                                   │
+  "PML_"  ════════════════════════════╪═The solver says these have to be PML_  │
+                                      │ Who am I to argue?                     │
+                                      │       (and                             │
+                                      │         (= INPUT_0 (_ bv80 8 ) )       │
+                                      │         (= INPUT_1 (_ bv77 8 ) )       │
+                                      │         (= INPUT_2 (_ bv76 8 ) )       │
+                                      │         (= INPUT_3 (_ bv95 8 ) )       │
+                                      │       )                                │
+                                      │                                        │
+                                      │@004:                                   │
+   09000000  ═════════════════════════╪═There is some flex here in the         │
+                                      │ constraints, but these look good to me │
+                                      │                                        │
+                                      │@008:                                   │
+   01  ═══════════════════════════════╪═This low bit must be 1, the others     │
+                                      │ just choose not to be                  │
+                                      │       (not                             │
+                                      │         (=                             │
+                                      │           ((_ extract 0 0 ) INPUT_8)   │
+                                      │           (_ bv0 1 )                   │
+                                      │         )                              │
+                                      │       )                                │
+                                      │                                        │
+                                      │@009:                                   │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╪═These can be whatever you want!        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡ Lauren Ipman or whatever, you choose   │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@"  ═════════╡                                        │
+                                      │                                        │
+                                      │@240:                                   │
+   ff00000000000000  ═════════════════╪═Reliable sources (z3) tell me that     │
+                                      │ this value just has to be non-zero to  │
+                                      │ stay on the path to our crash          │
+                                      │                                        │
+                                      │@248:                                   │
+   ff00000000000000  ═════════════════╪═Another non-zero value                 │
+                                      │                                        │
+                                      │@250:                                   │
+   00ff000000000000  ═════════════════╪═Non-zero, and we also added our own    │
+                                      │ constraints here so MapViewOfFile      │
+                                      │ would work with our small file         │
+                                      │                                        │
+                                      │@258:                                   │
+   ff00000000000000  ═════════════════╪═Path constraints say non-zero again,   │
+                                      │ And some of these values end up in the │
+                                      │ AST for our derefrenced pointer        │
+                                      │                                        │
+                                      │@260:                                   │
+   33337a34cd303333  ═════════════════╪═This value can't be zero, and is the   │
+                                      │ most controllable part of our pointer  │
+                                      │ that gets drefrenced, as the below AST │
+                                      │ for the pointer shows:                 │
+                                      │       (bvadd                           │
+                                      │         (bvadd                         │
+                                      │           (_ bv0x20e02fa0000 64 )      │
+                                      │           (concat                      │
+                                      │             INPUT_267                  │
+                                      │             INPUT_266                  │
+                                      │             INPUT_265                  │
+                                      │             INPUT_264                  │
+                                      │             INPUT_263                  │
+                                      │             INPUT_262                  │
+                                      │             INPUT_261                  │
+                                      │             INPUT_260                  │
+                                      │           )                            │
+                                      │         )                              │
+                                      │         (bvmul                         │
+                                      │           (_ bv0xffffffffffffffff 64 ) │
+                                      │           (concat                      │
+                                      │             INPUT_257                  │
+                                      │             INPUT_256                  │
+                                      │             INPUT_255                  │
+                                      │             INPUT_254                  │
+                                      │             INPUT_253                  │
+                                      │             INPUT_252                  │
+                                      │             (_ bv0 16 )                │
+                                      │           )                            │
+                                      │         )                              │
+                                      │       )                                │
+                                      │                                        │
+                                      │@268:                                   │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╪═More empty space you can use as you    │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡ see fit. I didn't, but you still can   │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"  ╡                                        │
+  "@@@@@@@@@@@@@@@@"  ════════════════╡                                        │
+                                      │                                        │
+                                      │@398:                                   │
+   a8030000  ═════════════════════════╪═Look, just trust the solver, okay?     │
+                                      │ This is the value you want             │
+                                      │                                        │
+                                      │@39C:                                   │
+  "@@@@@@@@@@@@"  ════════════════════╪═A little tail to pad out to min size   │
+                                      │                                        │
+                                      └────────────────────────────────────────┘
+
